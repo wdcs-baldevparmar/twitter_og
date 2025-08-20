@@ -4,7 +4,24 @@ type Props = {
   params: { pair: string };
   searchParams: { side?: string; leverage?: string; pnl?: string };
 };
-
+export async function generateMetadata1({}): Promise<Metadata> {
+  return {
+    title: ` Twitter OG Demo`,
+    description: "abcd",
+    openGraph: {
+      title: `Twitter OG Demo`,
+      description: "abcd",
+      type: "website",
+      url: `${process.env.NEXT_PUBLIC_BASE_URL}`,
+      images: [{ url: imageUrl, width: 1200, height: 630, alt: "OG Card" }],
+    },
+    twitter: {
+      title: `Twitter OG Demo`,
+      description: "abcd",
+      images: [imageUrl], // twitter images = string[]
+    },
+  };
+}
 export async function generateMetadata({
   params,
   searchParams,
@@ -14,6 +31,7 @@ export async function generateMetadata({
   const leverage = searchParams.leverage || "10";
   const pnl = parseFloat(searchParams.pnl ?? "12.45");
   const pairForImage = pairFromUrl.replace("_", "-");
+  console.log("🚀 ~ generateMetadata ~ pairForImage:", pairForImage);
 
   const description = `${pnl >= 0 ? "📈" : "📉"} Just ${
     pnl >= 0 ? "made" : "took"
@@ -21,11 +39,15 @@ export async function generateMetadata({
     pnl >= 0 ? "profit" : "loss"
   } on ${pairForImage} ${side} ${leverage}x!`;
 
-  const imageUrl = `/api/og?side=${encodeURIComponent(
-    side
-  )}&leverage=${encodeURIComponent(leverage)}&pair=${encodeURIComponent(
-    pairForImage
-  )}&pnl=${encodeURIComponent(String(pnl))}`;
+  // const imageUrl = `/api/og?side=${encodeURIComponent(
+  //   side
+  // )}&leverage=${encodeURIComponent(leverage)}&pair=${encodeURIComponent(
+  //   pairForImage
+  // )}&pnl=${encodeURIComponent(String(pnl))}`;
+
+  const imageUrl = `${
+    process.env.NEXT_PUBLIC_BASE_URL
+  }/api/og/${encodeURIComponent(pairForImage)}`;
 
   return {
     title: `${pairFromUrl} – Twitter OG Demo`,
@@ -52,6 +74,7 @@ export default function PairPage({ params, searchParams }: Props) {
   const leverage = searchParams.leverage || "10";
   const pnl = parseFloat(searchParams.pnl ?? "12.45");
   const pairForImage = pairFromUrl.replace("_", "-");
+  console.log("🚀 ~ PairPage ~ pairForImage:", pairForImage);
 
   const description = `${pnl >= 0 ? "📈" : "📉"} Just ${
     pnl >= 0 ? "made" : "took"
