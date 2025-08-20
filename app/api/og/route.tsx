@@ -4,70 +4,62 @@ export const runtime = "edge";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
+  console.log("🚀 ~ GET ~ searchParams:", searchParams);
   const side = (searchParams.get("side") || "BUY").toUpperCase();
   const leverage = searchParams.get("leverage") || "10";
-  const pair = searchParams.get("pair") || "BTC-USDT";
+  const pair = searchParams?.get("pair") || "BTC-USDT";
   const pnl = parseFloat(searchParams.get("pnl") || "12.45");
+  console.log("🚀 ~ GET ~ pnl:", pnl);
 
   const color = pnl >= 0 ? "#20DB74" : "#FF7D5D";
 
   return new ImageResponse(
     (
-      // <div
-      //   style={{
-      //     height: '100%',
-      //     width: '100%',
-      //     display: 'flex',
-      //     flexDirection: 'column',
-      //     justifyContent: 'center',
-      //     padding: '64px',
-      //     background: '#000',
-      //     color: '#fff',
-      //     fontFamily: 'sans-serif',
-      //   }}
-      // >
-      //   <div style={{ display:'flex', gap:12, alignItems:'center', fontSize: 42, fontWeight: 700 }}>
-      //     <span style={{ color }}>{side}</span>
-      //     <span style={{ opacity:.5 }}>•</span>
-      //     <span style={{ opacity:.9 }}>{leverage}x</span>
-      //     <span style={{ opacity:.5 }}>•</span>
-      //     <span style={{ opacity:.9 }}>{pair}</span>
-      //   </div>
-
-      //   <div style={{ height: 28 }} />
-
-      //   <div style={{ fontSize: 92, fontWeight: 800, color }}>{pnl.toFixed(2)}%</div>
-      //   <div style={{ opacity:.6, fontSize: 24 }}>
-      //     {pnl >= 0 ? 'Profit' : 'Loss'} on {pair} {side} {leverage}x
-      //   </div>
-
-      //   <div style={{ position:'absolute', right: 48, bottom: 40, opacity:.4, fontSize: 22 }}>
-      //     twitter-og-demo
-      //   </div>
-      // </div>
-
       <div
         style={{
           height: "100%",
           width: "100%",
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "#fff",
-          fontSize: 32,
-          fontWeight: 600,
+          padding: "64px",
+          background: "#000",
+          color: "#fff",
+          fontFamily: "sans-serif",
         }}
       >
-        <svg
-          width="75"
-          viewBox="0 0 75 65"
-          fill="#000"
-          style={{ margin: "0 75px" }}
+        <div
+          style={{
+            opacity: 0.6,
+            fontSize: 24,
+            display: "flex",
+            gap: 6,
+          }}
         >
-          <path d="M37.59.25l36.95 64H.64l36.95-64z"></path>
-        </svg>
-        <div style={{ marginTop: 40 }}>Hello, World</div>
+          <span
+            style={{
+              color: color,
+            }}
+          >
+            {pnl >= 0 ? "Profit" : "Loss"} ({pnl} USDC) on
+          </span>
+
+          <span>{pair}</span>
+          <span>{side}</span>
+          <span>{leverage}x</span>
+          <span>pnl </span>
+        </div>
+        <div
+          style={{
+            position: "absolute",
+            right: 48,
+            bottom: 40,
+            opacity: 0.4,
+            fontSize: 22,
+          }}
+        >
+          twitter-og-demo asdasd
+        </div>
       </div>
     ),
     {

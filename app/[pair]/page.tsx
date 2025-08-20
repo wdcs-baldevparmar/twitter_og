@@ -2,42 +2,40 @@ import type { Metadata } from "next";
 
 type Props = {
   params: { pair: string };
-  // searchParams: { side?: string; leverage?: string; pnl?: string };
+  searchParams: { side?: string; leverage?: string; pnl?: string };
 };
 
 export async function generateMetadata({
   params,
+  searchParams, // Uncomment if you want to use searchParams
 }: // searchParams,
 Props): Promise<Metadata> {
   const pairFromUrl = (params.pair || "ETH_USD").toUpperCase();
-  // const side = (searchParams.side || "BUY").toUpperCase();
-  // const leverage = searchParams.leverage || "10";
-  // const pnl = parseFloat(searchParams.pnl ?? "12.45");
-  // const pairForImage = pairFromUrl.replace("_", "-");
-  // console.log("🚀 ~ generateMetadata ~ pairForImage:", pairForImage);
+  const side = (searchParams.side || "BUY").toUpperCase();
+  const leverage = searchParams.leverage || "10";
+  const pnl = parseFloat(searchParams.pnl || "12.45");
+  const pairForImage = pairFromUrl.replace("_", "-");
 
-  // const description = `${pnl >= 0 ? "📈" : "📉"} Just ${
-  //   pnl >= 0 ? "made" : "took"
-  // } ${Math.abs(pnl).toFixed(2)}% ${
-  //   pnl >= 0 ? "profit" : "loss"
-  // } on ${pairForImage} ${side} ${leverage}x!`;
-
-  // const imageUrl = `/api/og?side=${encodeURIComponent(
-  //   side
-  // )}&leverage=${encodeURIComponent(leverage)}&pair=${encodeURIComponent(
-  //   pairForImage
-  // )}&pnl=${encodeURIComponent(String(pnl))}`;
+  const description = `${pnl >= 0 ? "📈" : "📉"} Just ${
+    pnl >= 0 ? "made" : "took"
+  } ${Math.abs(pnl).toFixed(2)}% ${
+    pnl >= 0 ? "profit" : "loss"
+  } on ${pairForImage} ${side} ${leverage}x!`;
 
   const imageUrl = `${
     process.env.NEXT_PUBLIC_BASE_URL
-  }/api/og/${encodeURIComponent(pairFromUrl)}`;
+  }/api/og?pair=${encodeURIComponent(pairFromUrl)}&side=${encodeURIComponent(
+    side
+  )}&leverage=${encodeURIComponent(leverage)}&pnl=${encodeURIComponent(
+    String(pnl)
+  )}`;
 
   return {
     title: `${pairFromUrl} – Twitter OG Demo`,
-    // description,
+    description,
     openGraph: {
       title: `${pairFromUrl} – Twitter OG Demo`,
-      // description,
+      description,
       type: "website",
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/${pairFromUrl}`,
       images: [{ url: imageUrl, width: 1200, height: 630, alt: "OG Card" }],
@@ -45,36 +43,36 @@ Props): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title: `${pairFromUrl} – Twitter OG Demo`,
-      // description,
+      description,
       images: [imageUrl], // twitter images = string[]
     },
   };
 }
 
-export default function PairPage({ params }: Props) {
+export default function PairPage({ params, searchParams }: Props) {
   const pairFromUrl = (params.pair || "ETH_USD").toUpperCase();
-  // const side = (searchParams.side || "BUY").toUpperCase();
-  // const leverage = searchParams.leverage || "10";
-  // const pnl = parseFloat(searchParams.pnl ?? "12.45");
+  const side = (searchParams.side || "BUY").toUpperCase();
+  const leverage = searchParams.leverage || "10";
+  const pnl = parseFloat(searchParams.pnl ?? "12.45");
   const pairForImage = pairFromUrl.replace("_", "-");
   console.log("🚀 ~ PairPage ~ pairForImage:", pairForImage);
 
-  // const description = `${pnl >= 0 ? "📈" : "📉"} Just ${
-  //   pnl >= 0 ? "made" : "took"
-  // } ${Math.abs(pnl).toFixed(2)}% ${
-  //   pnl >= 0 ? "profit" : "loss"
-  // } on ${pairForImage} ${side} ${leverage}x!`;
+  const description = `${pnl >= 0 ? "📈" : "📉"} Just ${
+    pnl >= 0 ? "made" : "took"
+  } ${Math.abs(pnl).toFixed(2)}% ${
+    pnl >= 0 ? "profit" : "loss"
+  } on ${pairForImage} ${side} ${leverage}x!`;
 
-  // const shareUrl = `${
-  //   process.env.NEXT_PUBLIC_BASE_URL
-  // }/${pairFromUrl}?side=${encodeURIComponent(
-  //   side
-  // )}&leverage=${encodeURIComponent(leverage)}&pnl=${encodeURIComponent(
-  //   String(pnl)
-  // )}`;
-  // const twitterIntent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-  //   description
-  // )}&url=${encodeURIComponent(shareUrl)}`;
+  const shareUrl = `${
+    process.env.NEXT_PUBLIC_BASE_URL
+  }/api/og?pair=${pairFromUrl}?side=${encodeURIComponent(
+    side
+  )}&leverage=${encodeURIComponent(leverage)}&pnl=${encodeURIComponent(
+    String(pnl)
+  )}`;
+  const twitterIntent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+    description
+  )}&url=${encodeURIComponent(shareUrl)}`;
 
   return (
     <main className="container">
@@ -87,7 +85,7 @@ export default function PairPage({ params }: Props) {
           </small>
         </p>
 
-        {/* <div className="grid">
+        <div className="grid">
           <div>
             <div className="label">Side</div>
             <input className="input" defaultValue={side} readOnly />
@@ -100,9 +98,9 @@ export default function PairPage({ params }: Props) {
             <div className="label">PnL %</div>
             <input className="input" defaultValue={String(pnl)} readOnly />
           </div>
-        </div> */}
+        </div>
 
-        {/* <div className="mt-6">
+        <div className="mt-6">
           <a
             className="button"
             href={twitterIntent}
@@ -111,9 +109,8 @@ export default function PairPage({ params }: Props) {
           >
             Share on Twitter
           </a>
-        </div> */}
-
-        {/* <div className="mt-4">
+        </div>
+        <div className="mt-4">
           <small className="muted">Direct OG image preview:</small>
           <br />
           <a
@@ -129,7 +126,7 @@ export default function PairPage({ params }: Props) {
           >
             /api/og?side=...&leverage=...&pair=...&pnl=...
           </a>
-        </div> */}
+        </div>
       </div>
     </main>
   );
