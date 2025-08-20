@@ -21,12 +21,11 @@ export async function generateMetadata({
     pnl >= 0 ? "profit" : "loss"
   } on ${pairForImage} ${side} ${leverage}x!`;
 
-  // const imageUrl = `/api/og?side=${encodeURIComponent(
-  //   side
-  // )}&leverage=${encodeURIComponent(leverage)}&pair=${encodeURIComponent(
-  //   pairForImage
-  // )}&pnl=${encodeURIComponent(String(pnl))}`;
-  const imageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/og`;
+  const imageUrl = `/api/og?side=${encodeURIComponent(
+    side
+  )}&leverage=${encodeURIComponent(leverage)}&pair=${encodeURIComponent(
+    pairForImage
+  )}&pnl=${encodeURIComponent(String(pnl))}`;
 
   return {
     title: `${pairFromUrl} – Twitter OG Demo`,
@@ -38,12 +37,12 @@ export async function generateMetadata({
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/${pairFromUrl}`,
       images: [{ url: imageUrl, width: 1200, height: 630, alt: "OG Card" }],
     },
-    // twitter: {
-    //   card: "summary_large_image",
-    //   title: `${pairFromUrl} – Twitter OG Demo`,
-    //   description,
-    //   images: [imageUrl], // twitter images = string[]
-    // },
+    twitter: {
+      card: "summary_large_image",
+      title: `${pairFromUrl} – Twitter OG Demo`,
+      description,
+      images: [imageUrl], // twitter images = string[]
+    },
   };
 }
 
