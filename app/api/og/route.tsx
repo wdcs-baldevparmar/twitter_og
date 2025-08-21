@@ -4,12 +4,10 @@ export const runtime = "edge";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  console.log("🚀 ~ GET ~ searchParams:", searchParams);
   const side = (searchParams.get("side") || "BUY").toUpperCase();
   const leverage = searchParams.get("leverage") || "10";
   const pair = searchParams?.get("pair") || "BTC-USDT";
   const pnl = parseFloat(searchParams.get("pnl") || "12.45");
-  console.log("🚀 ~ GET ~ pnl:", pnl);
 
   const color = pnl >= 0 ? "#20DB74" : "#FF7D5D";
 
