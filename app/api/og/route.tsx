@@ -126,8 +126,8 @@ export async function GET(request: Request) {
       </div>
     ),
     {
-      width: 1200,
-      height: 630,
+      width: 525,
+      height: 275,
       fonts: [
         {
           name: "Poppins",
