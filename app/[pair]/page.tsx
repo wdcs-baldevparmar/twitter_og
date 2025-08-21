@@ -32,10 +32,10 @@ Props): Promise<Metadata> {
 
   return {
     title: `${pairFromUrl} – Twitter OG Demo`,
-    // description,
+    description,
     openGraph: {
       title: `${pairFromUrl} – Twitter OG Demo`,
-      // description,
+      description,
       type: "website",
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/${pairFromUrl}`,
       images: [{ url: imageUrl, width: 1200, height: 630, alt: "OG Card" }],
@@ -43,7 +43,7 @@ Props): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title: `${pairFromUrl} – Twitter OG Demo`,
-      // description,
+      description,
       images: [imageUrl], // twitter images = string[]
     },
   };
