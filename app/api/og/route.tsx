@@ -29,55 +29,7 @@ export async function GET(request: Request) {
   const PoppinsBold = fetch(
     new URL(`${apiBaseUrl}/fonts/Poppins-Bold.woff`, import.meta.url)
   ).then((res) => res.arrayBuffer());
-
-  const userAgent = request.headers.get("user-agent") || "";
-  if (
-    userAgent.includes("Twitterbot") ||
-    userAgent.includes("facebookexternalhit") ||
-    userAgent.includes("LinkedInBot") ||
-    userAgent.includes("WhatsApp")
-  ) {
-    // Create a separate image URL that forces image response
-    const imageUrl = new URL(request.url);
-    imageUrl.searchParams.set("format", "image"); // Add a parameter to force image
-
-    const description = `${pnlPercentage >= 0 ? "📈" : "📉"} Just ${
-      pnlPercentage >= 0 ? "made" : "took"
-    } ${Math.abs(pnlPercentage).toFixed(2)}% ${
-      pnlPercentage >= 0 ? "profit" : "loss"
-    } on ${pair} ${side} ${leverage}x!`;
-
-    return new Response(
-      `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta property="og:title" content="Trading PnL Share" />
-          <meta property="og:description" content="${description}" />
-          <meta property="og:image" content="${imageUrl.toString()}" />
-          <meta property="og:image:width" content="525" />
-          <meta property="og:image:height" content="275" />
-          <meta property="og:type" content="website" />
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:title" content="Trading PnL Share" />
-          <meta name="twitter:description" content="${description}" />
-          <meta name="twitter:image" content="${imageUrl.toString()}" />
-          <title>Trading PnL Share</title>
-        </head>
-        <body>
-          <h1>${description}</h1>
-        </body>
-      </html>
-    `,
-      {
-        headers: {
-          "Content-Type": "text/html",
-        },
-      }
-    );
-  }
-
-  const imageResponse = new ImageResponse(
+  return new ImageResponse(
     (
       <div
         tw="flex flex-col w-full h-full justify-center p-6"
@@ -174,8 +126,8 @@ export async function GET(request: Request) {
       </div>
     ),
     {
-      width: 525,
-      height: 275,
+      width: 1200,
+      height: 630,
       fonts: [
         {
           name: "Poppins",
@@ -204,19 +156,4 @@ export async function GET(request: Request) {
       ],
     }
   );
-  const headers = new Headers();
-  headers.set("Cache-Control", "public, max-age=31536000, immutable");
-  headers.set("Content-Type", "image/png");
-
-  if (download) {
-    headers.set(
-      "Content-Disposition",
-      `attachment; filename="share-${pair}-${Date.now()}.png"`
-    );
-  }
-
-  return new Response(imageResponse.body, {
-    status: imageResponse.status,
-    headers,
-  });
 }
