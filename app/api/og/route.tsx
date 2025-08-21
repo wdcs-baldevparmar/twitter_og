@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 const apiBaseUrl =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.example.com";
+  process.env.NEXT_PUBLIC_BASE_URL || "https://api.example.com";
 
 export const runtime = "edge";
 
