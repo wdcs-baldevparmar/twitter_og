@@ -65,7 +65,7 @@ export default function PairPage({ params, searchParams }: Props) {
 
   const shareUrl = `${
     process.env.NEXT_PUBLIC_BASE_URL
-  }?pair=${pairFromUrl}?side=${encodeURIComponent(
+  }/${pairFromUrl}?side=${encodeURIComponent(
     side
   )}&leverage=${encodeURIComponent(leverage)}&pnl=${encodeURIComponent(
     String(pnl)
