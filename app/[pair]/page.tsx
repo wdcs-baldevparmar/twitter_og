@@ -109,6 +109,18 @@ export default function PairPage({ params, searchParams }: Props) {
           >
             Share on Twitter
           </a>
+          <a
+            href={`/api/og?side=${encodeURIComponent(
+              side
+            )}&leverage=${encodeURIComponent(
+              leverage
+            )}&pair=${encodeURIComponent(
+              pairForImage
+            )}&pnl=${encodeURIComponent(String(pnl))}`}
+            download={`og-${pairForImage}-${side}-${leverage}x.png`}
+          >
+            Download OG Image
+          </a>
         </div>
         <div className="mt-4">
           <small className="muted">Direct OG image preview:</small>
