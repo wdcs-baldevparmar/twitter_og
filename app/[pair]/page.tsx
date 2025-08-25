@@ -73,6 +73,16 @@ export default function PairPage({ params, searchParams }: Props) {
   const twitterIntent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
     description
   )}&url=${encodeURIComponent(shareUrl)}`;
+  {
+    console.log(
+      "sfsdfsdf",
+      `/api/og?side=${encodeURIComponent(side)}&leverage=${encodeURIComponent(
+        leverage
+      )}&pair=${encodeURIComponent(pairForImage)}&pnl=${encodeURIComponent(
+        String(pnl)
+      )}&download=1`
+    );
+  }
 
   return (
     <main className="container">
@@ -108,6 +118,20 @@ export default function PairPage({ params, searchParams }: Props) {
             rel="noopener noreferrer"
           >
             Share on Twitter
+          </a>
+
+          <a
+            className="button"
+            href={`/api/og?side=${encodeURIComponent(
+              side
+            )}&leverage=${encodeURIComponent(
+              leverage
+            )}&pair=${encodeURIComponent(
+              pairForImage
+            )}&pnl=${encodeURIComponent(String(pnl))}&download=1`}
+            download={`${pairForImage}-${side}.png`}
+          >
+            Download
           </a>
         </div>
         <div className="mt-4">
