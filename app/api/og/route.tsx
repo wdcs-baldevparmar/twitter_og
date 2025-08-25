@@ -72,8 +72,6 @@ export async function GET(request: Request) {
         <div tw="mb-7 flex flex-col">
           <div
             style={{
-              display: "flex",
-              flexDirection: "column",
               fontSize: "36px",
               fontWeight: 600,
               color: pnlPercentage >= 0 ? "#20DB74" : "#FF7D5D",
@@ -87,7 +85,7 @@ export async function GET(request: Request) {
               color: raw_pnl >= 0 ? "#20DB74" : "#FF7D5D",
             }}
           >
-            {Number(raw_pnl).toFixed(2)}
+            {raw_pnl.toFixed(2)}
           </div>
         </div>
 
