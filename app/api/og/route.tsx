@@ -1,58 +1,59 @@
 // app/api/og/route.tsx
 import { ImageResponse } from "next/og";
-
 export const runtime = "edge";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
 
   const download = searchParams.get("download");
-
   const side = (searchParams.get("side") || "BUY").toUpperCase();
-  const leverage = searchParams.get("leverage") || "10";
+  const leverage = (searchParams.get("leverage") || "10").toString();
   const pair = (searchParams.get("pair") || "BTC-USDT").toUpperCase();
-  const pnlPercentage = parseFloat(searchParams.get("pnl") || "12.45");
-  const raw_pnl = parseFloat(searchParams.get("raw_pnl") || "123.45");
+  const pnl = parseFloat(searchParams.get("pnl") || "12.45");
+  const raw = parseFloat(searchParams.get("raw_pnl") || "123.45");
   const price = searchParams.get("price") || "45123.56";
   const timestamp = searchParams.get("timestamp") || "2025-08-19 14:22";
 
-  // Load fonts from the SAME origin to avoid “site wasn’t available” due to external base URLs
-  async function load(url: string) {
-    const r = await fetch(url);
-    if (!r.ok) throw new Error(`Failed ${url}`);
-    return r.arrayBuffer();
-  }
+  const tryLoad = async (url: string) => {
+    try {
+      const r = await fetch(url, { cache: "force-cache" });
+      if (!r.ok) throw 0;
+      return await r.arrayBuffer();
+    } catch {
+      return undefined;
+    }
+  };
 
-  let poppinsRegular: ArrayBuffer | undefined;
-  let poppinsMedium: ArrayBuffer | undefined;
-  let poppinsSemiBold: ArrayBuffer | undefined;
-  let poppinsBold: ArrayBuffer | undefined;
+  const [p400, p500, p600, p700] = await Promise.all([
+    tryLoad(`${origin}/fonts/Poppins-Regular.woff`),
+    tryLoad(`${origin}/fonts/Poppins-Medium.woff`),
+    tryLoad(`${origin}/fonts/Poppins-SemiBold.woff`),
+    tryLoad(`${origin}/fonts/Poppins-Bold.woff`),
+  ]);
 
-  try {
-    [poppinsRegular, poppinsMedium, poppinsSemiBold, poppinsBold] =
-      await Promise.all([
-        load(`${origin}/fonts/Poppins-Regular.woff`),
-        load(`${origin}/fonts/Poppins-Medium.woff`),
-        load(`${origin}/fonts/Poppins-SemiBold.woff`),
-        load(`${origin}/fonts/Poppins-Bold.woff`),
-      ]);
-  } catch {
-    // Fallback: render without custom fonts if local assets aren’t accessible
-  }
-
-  const resp = new ImageResponse(
+  const img = new ImageResponse(
     (
       <div
-        tw="flex flex-col w-full h-full justify-center p-6"
         style={{
-          backgroundColor: "#000000", // keep solid bg to avoid external image fetches
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          width: "100%",
+          height: "100%",
+          padding: 24,
+          backgroundColor: "#000",
           fontFamily: "Poppins, sans-serif",
+          position: "relative",
         }}
       >
         {/* Header */}
         <div
-          tw="mb-8"
-          style={{ display: "flex", alignItems: "center", gap: "8px" }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            marginBottom: 32,
+          }}
         >
           <div
             style={{
@@ -62,101 +63,129 @@ export async function GET(request: Request) {
           >
             {side}
           </div>
-          <div tw="flex flex-col w-1 h-1 rounded-full bg-gray-400" />
-          <div tw="flex flex-col text-gray-300 font-medium">{leverage}x</div>
-          <div tw="flex flex-col w-1 h-1 rounded-full bg-gray-400" />
-          <div tw="flex flex-col text-gray-300 font-medium">{pair}</div>
-        </div>
-
-        {/* PNL */}
-        <div tw="mb-7 flex flex-col">
           <div
             style={{
-              fontSize: "36px",
-              fontWeight: 600,
-              color: pnlPercentage >= 0 ? "#20DB74" : "#FF7D5D",
+              display: "flex",
+              width: 4,
+              height: 4,
+              borderRadius: 9999,
+              background: "#9CA3AF",
             }}
-          >
-            {pnlPercentage.toFixed(2)}%
+          />
+          <div style={{ display: "flex", color: "#D1D5DB", fontWeight: 500 }}>
+            {leverage}x
           </div>
           <div
             style={{
-              fontWeight: 600,
-              color: raw_pnl >= 0 ? "#20DB74" : "#FF7D5D",
+              display: "flex",
+              width: 4,
+              height: 4,
+              borderRadius: 9999,
+              background: "#9CA3AF",
             }}
-          >
-            {raw_pnl.toFixed(2)}
+          />
+          <div style={{ display: "flex", color: "#D1D5DB", fontWeight: 500 }}>
+            {pair}
           </div>
         </div>
 
-        {/* Price + timestamp */}
+        {/* PnL */}
         <div
-          tw="flex flex-row text-gray-300 font-medium mb-7"
-          style={{ gap: "8px" }}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+            marginBottom: 28,
+          }}
         >
-          <span style={{ color: "rgba(255, 255, 255, 0.4)" }}>
-            Closed Price:{" "}
-          </span>
+          <div
+            style={{
+              display: "flex",
+              fontSize: 36,
+              fontWeight: 600,
+              color: pnl >= 0 ? "#20DB74" : "#FF7D5D",
+            }}
+          >
+            {pnl.toFixed(2)}%
+          </div>
+          <div
+            style={{
+              display: "flex",
+              fontWeight: 600,
+              color: raw >= 0 ? "#20DB74" : "#FF7D5D",
+            }}
+          >
+            {raw.toFixed(2)}
+          </div>
+        </div>
+
+        {/* Price row */}
+        <div
+          style={{
+            display: "flex",
+            gap: 8,
+            color: "#D1D5DB",
+            fontWeight: 500,
+            marginBottom: 28,
+          }}
+        >
+          <span style={{ color: "rgba(255,255,255,0.4)" }}>Closed Price:</span>
           {price}
         </div>
-        <div tw="text-sm " style={{ color: "rgba(255, 255, 255, 0.4)" }}>
+
+        {/* Timestamp (single child, no flex needed) */}
+        <div
+          style={{
+            display: "flex",
+            fontSize: 14,
+            color: "rgba(255,255,255,0.4)",
+          }}
+        >
           {timestamp}
         </div>
 
-        {/* Right illustration (served from same origin) */}
-        <div tw="flex flex-row absolute right-0 top-0">
-          <img
-            src={`${origin}/images/shareable.svg`}
-            width={225}
-            height={275}
-            alt="share"
-          />
-        </div>
+        {/* Decorative (no children) */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            width: 260,
+            height: 260,
+            background:
+              "radial-gradient(closest-side, rgba(32,219,116,0.25), transparent 70%)",
+            filter: "blur(6px)",
+          }}
+        />
       </div>
     ),
     {
       width: 1200,
       height: 630,
       fonts: [
-        poppinsRegular && {
-          name: "Poppins",
-          data: poppinsRegular,
-          weight: 400,
-          style: "normal",
-        },
-        poppinsMedium && {
-          name: "Poppins",
-          data: poppinsMedium,
-          weight: 500,
-          style: "normal",
-        },
-        poppinsSemiBold && {
-          name: "Poppins",
-          data: poppinsSemiBold,
-          weight: 600,
-          style: "normal",
-        },
-        poppinsBold && {
-          name: "Poppins",
-          data: poppinsBold,
-          weight: 700,
-          style: "normal",
-        },
+        p400 && { name: "Poppins", data: p400, weight: 400, style: "normal" },
+        p500 && { name: "Poppins", data: p500, weight: 500, style: "normal" },
+        p600 && { name: "Poppins", data: p600, weight: 600, style: "normal" },
+        p700 && { name: "Poppins", data: p700, weight: 700, style: "normal" },
       ].filter(Boolean) as any,
     }
   );
 
-  (resp as any).headers.set("Content-Type", "image/png");
+  const headers = new Headers(img.headers);
+  headers.set("Content-Type", "image/png");
 
   if (download) {
     const safe = (s: string) => s.replace(/[^a-z0-9._-]/gi, "_");
-    const filename = `${safe(pair)}-${safe(side)}-${safe(leverage)}x.png`;
-    (resp as any).headers.set(
+    headers.set(
       "Content-Disposition",
-      `attachment; filename="${filename}"`
+      `attachment; filename="${safe(pair)}-${safe(side)}-${safe(
+        leverage
+      )}x.png"`
     );
-    (resp as any).headers.set("Cache-Control", "no-store");
+    headers.set("Cache-Control", "no-store");
+  } else {
+    headers.set("Cache-Control", "public, max-age=31536000, immutable");
   }
 
-  return resp;
+  return new Response(img.body, { headers });
 }
