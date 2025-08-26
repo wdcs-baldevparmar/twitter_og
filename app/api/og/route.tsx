@@ -10,9 +10,29 @@ export async function GET(request: Request) {
   const leverage = (searchParams.get("leverage") || "10").toString();
   const pair = (searchParams.get("pair") || "BTC-USDT").toUpperCase();
   const pnl = parseFloat(searchParams.get("pnl") || "12.45");
-  const raw = parseFloat(searchParams.get("raw_pnl") || "123.45");
-  const price = searchParams.get("price") || "45123.56";
-  const timestamp = searchParams.get("timestamp") || "2025-08-19 14:22";
+  const rawPnl = parseFloat(searchParams.get("raw_pnl") || "124.50");
+  const price = searchParams.get("price") || "2500.50";
+  const time = searchParams.get("time") || new Date().toISOString();
+
+  // Format timestamp for display
+  const formatTimestamp = (timestamp: string) => {
+    try {
+      const date = new Date(timestamp);
+      return date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      });
+    } catch {
+      return timestamp;
+    }
+  };
+
+  const displayTime = formatTimestamp(time);
 
   const tryLoad = async (url: string) => {
     try {
@@ -112,10 +132,10 @@ export async function GET(request: Request) {
             style={{
               display: "flex",
               fontWeight: 600,
-              color: raw >= 0 ? "#20DB74" : "#FF7D5D",
+              color: rawPnl >= 0 ? "#20DB74" : "#FF7D5D",
             }}
           >
-            {raw.toFixed(2)}
+            ${rawPnl.toFixed(2)}
           </div>
         </div>
 
@@ -129,11 +149,11 @@ export async function GET(request: Request) {
             marginBottom: 28,
           }}
         >
-          <span style={{ color: "rgba(255,255,255,0.4)" }}>Closed Price:</span>
-          {price}
+          <span style={{ color: "rgba(255,255,255,0.4)" }}>Price:</span>
+          ${parseFloat(price).toFixed(2)}
         </div>
 
-        {/* Timestamp (single child, no flex needed) */}
+        {/* Timestamp */}
         <div
           style={{
             display: "flex",
@@ -141,7 +161,7 @@ export async function GET(request: Request) {
             color: "rgba(255,255,255,0.4)",
           }}
         >
-          {timestamp}
+          {displayTime}
         </div>
 
         {/* Decorative (no children) */}
