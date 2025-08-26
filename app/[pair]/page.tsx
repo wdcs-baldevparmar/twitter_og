@@ -2,7 +2,12 @@ import type { Metadata } from "next";
 
 type Props = {
   params: { pair: string };
-  searchParams: { side?: string; leverage?: string; pnl?: string };
+  searchParams: {
+    side?: string;
+    leverage?: string;
+    pnl?: string;
+    price?: string;
+  };
 };
 
 export async function generateMetadata({
@@ -54,6 +59,7 @@ export default function PairPage({ params, searchParams }: Props) {
   const side = (searchParams.side || "BUY").toUpperCase();
   const leverage = searchParams.leverage || "10";
   const pnl = parseFloat(searchParams.pnl ?? "12.45");
+  const price = searchParams.price || "45123.56";
   const pairForImage = pairFromUrl.replace("_", "-");
   console.log("🚀 ~ PairPage ~ pairForImage:", pairForImage);
 
@@ -108,6 +114,10 @@ export default function PairPage({ params, searchParams }: Props) {
             <div className="label">PnL %</div>
             <input className="input" defaultValue={String(pnl)} readOnly />
           </div>
+          <div>
+            <div className="label">Closed price</div>
+            <input className="input" defaultValue={price} readOnly />
+          </div>
         </div>
 
         <div className="mt-6">
@@ -128,7 +138,9 @@ export default function PairPage({ params, searchParams }: Props) {
               leverage
             )}&pair=${encodeURIComponent(
               pairForImage
-            )}&pnl=${encodeURIComponent(String(pnl))}&download=1`}
+            )}&pnl=${encodeURIComponent(
+              String(pnl)
+            )}&price=${encodeURIComponent(price)}&download=1`}
             download={`${pairForImage}-${side}.png`}
           >
             Download
@@ -144,7 +156,9 @@ export default function PairPage({ params, searchParams }: Props) {
               leverage
             )}&pair=${encodeURIComponent(
               pairForImage
-            )}&pnl=${encodeURIComponent(String(pnl))}`}
+            )}&pnl=${encodeURIComponent(
+              String(pnl)
+            )}&price=${encodeURIComponent(price)}`}
             target="_blank"
             rel="noopener noreferrer"
           >
