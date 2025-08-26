@@ -20,6 +20,7 @@ Props): Promise<Metadata> {
   const leverage = searchParams.leverage || "10";
   const pnl = parseFloat(searchParams.pnl || "12.45");
   const pairForImage = pairFromUrl.replace("_", "-");
+  const price = searchParams.price || "45123.56";
 
   const description = `${pnl >= 0 ? "📈" : "📉"} Just ${
     pnl >= 0 ? "made" : "took"
@@ -33,7 +34,7 @@ Props): Promise<Metadata> {
     side
   )}&leverage=${encodeURIComponent(leverage)}&pnl=${encodeURIComponent(
     String(pnl)
-  )}`;
+  )}&price=${encodeURIComponent(price)}`;
 
   return {
     title: `${pairFromUrl.replace("_", "-")} – Twitter OG Demo`,
