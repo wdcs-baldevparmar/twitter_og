@@ -76,7 +76,7 @@ export default function PairPage({ params, searchParams }: Props) {
     side
   )}&leverage=${encodeURIComponent(leverage)}&pnl=${encodeURIComponent(
     String(pnl)
-  )}`;
+  )}&price=${encodeURIComponent(price)}`;
   const twitterIntent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
     description
   )}&url=${encodeURIComponent(shareUrl)}`;
@@ -87,7 +87,7 @@ export default function PairPage({ params, searchParams }: Props) {
         leverage
       )}&pair=${encodeURIComponent(pairForImage)}&pnl=${encodeURIComponent(
         String(pnl)
-      )}&download=1`
+      )}&price=${encodeURIComponent(price)}&download=1`
     );
   }
 
