@@ -31,10 +31,10 @@ Props): Promise<Metadata> {
   )}`;
 
   return {
-    title: `${pairFromUrl} – Twitter OG Demo`,
+    title: `${pairFromUrl.replace("_", "-")} – Twitter OG Demo`,
     description,
     openGraph: {
-      title: `${pairFromUrl} – Twitter OG Demo`,
+      title: `${pairFromUrl.replace("_", "-")} – Twitter OG Demo`,
       description,
       type: "website",
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/${pairFromUrl}`,
@@ -42,7 +42,7 @@ Props): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: `${pairFromUrl} – Twitter OG Demo`,
+      title: `${pairFromUrl.replace("_", "-")} – Twitter OG Demo`,
       description,
       images: [imageUrl], // twitter images = string[]
     },

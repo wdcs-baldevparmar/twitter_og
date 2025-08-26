@@ -85,7 +85,7 @@ export async function GET(request: Request) {
             }}
           />
           <div style={{ display: "flex", color: "#D1D5DB", fontWeight: 500 }}>
-            {pair}
+            {pair.replace("_", "-")}
           </div>
         </div>
 
