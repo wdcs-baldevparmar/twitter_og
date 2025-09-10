@@ -7,6 +7,9 @@ type Props = {
     leverage?: string;
     pnl?: string;
     price?: string;
+    raw_pnl?: string;
+    timestamp?: string;
+    show_amount?: string;
   };
 };
 
@@ -18,29 +21,41 @@ Props): Promise<Metadata> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
   const pairFromUrl = (params.pair || "ETH_USD").toUpperCase();
   const side = (searchParams.side || "BUY").toUpperCase();
-  const leverage = searchParams.leverage || "10";
-  const pnl = parseFloat(searchParams.pnl || "12.45");
+  const leverage = searchParams.leverage || "0";
+
+  // Parse numbers safely
+  const parseNumber = (val?: string) => {
+    const num = parseFloat(val ?? "");
+    return isNaN(num) ? 0 : num;
+  };
+
+  const pnl = parseNumber(searchParams.pnl);
+  const raw_pnl = parseNumber(searchParams.raw_pnl);
+  const price = parseNumber(searchParams.price);
+
   const pairForImage = pairFromUrl.replace("_", "-");
-  const price = searchParams.price || "45123.56";
+  const timestamp = searchParams.timestamp || "2025-08-19 14:22";
+  const pnlShown = searchParams?.show_amount ? "1" : "0";
+  const description = `Just closed a ${side} on ${pairForImage} with ${leverage}x`;
 
-  const description = `${pnl >= 0 ? "📈" : "📉"} Just ${
-    pnl >= 0 ? "made" : "took"
-  } ${Math.abs(pnl).toFixed(2)}% ${
-    pnl >= 0 ? "profit" : "loss"
-  } on ${pairForImage} ${side} ${leverage}x!`;
+  // Default fallback OG image
+  const fallbackImage = "/og-default.png";
 
-  const fallbackImage = "/images/opengraph-image.png";
+  // Fallback when: no baseUrl OR all trade values are zero/empty
+  const hasMeaningfulData = pnl !== 0 || raw_pnl !== 0 || price !== 0;
+  const shouldUseFallback = !baseUrl || !hasMeaningfulData;
 
-  let imageUrl = fallbackImage;
-  if (baseUrl) {
-    imageUrl = `${
-      process.env.NEXT_PUBLIC_BASE_URL
-    }/api/og?pair=${encodeURIComponent(pairFromUrl)}&side=${encodeURIComponent(
-      side
-    )}&leverage=${encodeURIComponent(leverage)}&pnl=${encodeURIComponent(
-      String(pnl)
-    )}&price=${encodeURIComponent(price)}`;
-  }
+  const imageUrl = shouldUseFallback
+    ? fallbackImage
+    : `${baseUrl}/api/og?pair=${encodeURIComponent(
+        pairFromUrl
+      )}&side=${encodeURIComponent(side)}&leverage=${encodeURIComponent(
+        leverage
+      )}&pnl=${encodeURIComponent(String(pnl))}&raw_pnl=${encodeURIComponent(
+        raw_pnl
+      )}&price=${encodeURIComponent(price)}&timestamp=${encodeURIComponent(
+        timestamp
+      )}&show_amount=${encodeURIComponent(pnlShown)}`;
 
   return {
     title: `${pairFromUrl.replace("_", "-")} – Twitter OG Demo`,
