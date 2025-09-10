@@ -116,7 +116,7 @@ export default function PairPage({ params, searchParams }: Props) {
   return (
     <main className="container">
       <div className="card">
-        <h1 className="text-2xl font-bold mb-2">{pairFromUrl}</h1>
+        <h1 className="text-2xl font-bold mb-2 ">{pairFromUrl}</h1>
         <p className="mb-6">
           <small className="muted">
             This page sets OpenGraph/Twitter metadata and points to a dynamic
