@@ -15,6 +15,7 @@ export async function generateMetadata({
   searchParams, // Uncomment if you want to use searchParams
 }: // searchParams,
 Props): Promise<Metadata> {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
   const pairFromUrl = (params.pair || "ETH_USD").toUpperCase();
   const side = (searchParams.side || "BUY").toUpperCase();
   const leverage = searchParams.leverage || "10";
@@ -28,13 +29,18 @@ Props): Promise<Metadata> {
     pnl >= 0 ? "profit" : "loss"
   } on ${pairForImage} ${side} ${leverage}x!`;
 
-  const imageUrl = `${
-    process.env.NEXT_PUBLIC_BASE_URL
-  }/api/og?pair=${encodeURIComponent(pairFromUrl)}&side=${encodeURIComponent(
-    side
-  )}&leverage=${encodeURIComponent(leverage)}&pnl=${encodeURIComponent(
-    String(pnl)
-  )}&price=${encodeURIComponent(price)}`;
+  const fallbackImage = "/opengraph-image.png";
+
+  let imageUrl = fallbackImage;
+  if (baseUrl) {
+    imageUrl = `${
+      process.env.NEXT_PUBLIC_BASE_URL
+    }/api/og?pair=${encodeURIComponent(pairFromUrl)}&side=${encodeURIComponent(
+      side
+    )}&leverage=${encodeURIComponent(leverage)}&pnl=${encodeURIComponent(
+      String(pnl)
+    )}&price=${encodeURIComponent(price)}`;
+  }
 
   return {
     title: `${pairFromUrl.replace("_", "-")} – Twitter OG Demo`,
@@ -43,7 +49,8 @@ Props): Promise<Metadata> {
       title: `${pairFromUrl.replace("_", "-")} – Twitter OG Demo`,
       description,
       type: "website",
-      url: `${process.env.NEXT_PUBLIC_BASE_URL}/${pairFromUrl}`,
+      // url: `${process.env.NEXT_PUBLIC_BASE_URL}/${pairFromUrl}`,
+      url: baseUrl ? `${baseUrl}/${pairFromUrl}` : undefined,
       images: [{ url: imageUrl, width: 1200, height: 630, alt: "OG Card" }],
     },
     twitter: {
