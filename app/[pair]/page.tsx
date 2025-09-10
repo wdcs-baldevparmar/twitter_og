@@ -29,7 +29,7 @@ Props): Promise<Metadata> {
     pnl >= 0 ? "profit" : "loss"
   } on ${pairForImage} ${side} ${leverage}x!`;
 
-  const fallbackImage = "/opengraph-image.png";
+  const fallbackImage = "/images/opengraph-image.png";
 
   let imageUrl = fallbackImage;
   if (baseUrl) {
