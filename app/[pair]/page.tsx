@@ -39,22 +39,37 @@ Props): Promise<Metadata> {
   const pnlShown = searchParams?.show_amount ? "1" : "0";
   const description = `Just closed a ${side} on ${pairForImage} with ${leverage}x`;
 
-  // absolute fallback
-  const fallbackImage = `${baseUrl}/opengraph-image.png`;
+  // base fallback image
+  const fallbackImage = `${baseUrl}/og-default.png`;
 
-  const hasValues = pnl !== 0 || raw_pnl !== 0 || price !== 0;
+  // check if query params exist
+  const hasQueryParams = Object.keys(searchParams).length > 0;
 
-  const imageUrl = hasValues
+  // build dynamic image URL if queries exist
+  const imageUrl = hasQueryParams
     ? `${baseUrl}/api/og?pair=${encodeURIComponent(
         pairFromUrl
-      )}&side=${encodeURIComponent(side)}&leverage=${encodeURIComponent(
-        leverage
-      )}&pnl=${encodeURIComponent(String(pnl))}&raw_pnl=${encodeURIComponent(
-        raw_pnl
-      )}&price=${encodeURIComponent(price)}&timestamp=${encodeURIComponent(
-        timestamp
-      )}&show_amount=${encodeURIComponent(pnlShown)}`
+      )}&${new URLSearchParams(
+        searchParams as Record<string, string>
+      ).toString()}`
     : fallbackImage;
+
+  // absolute fallback
+  // const fallbackImage = `${baseUrl}/opengraph-image.png`;
+
+  // const hasValues = pnl !== 0 || raw_pnl !== 0 || price !== 0;
+
+  // const imageUrl = hasValues
+  //   ? `${baseUrl}/api/og?pair=${encodeURIComponent(
+  //       pairFromUrl
+  //     )}&side=${encodeURIComponent(side)}&leverage=${encodeURIComponent(
+  //       leverage
+  //     )}&pnl=${encodeURIComponent(String(pnl))}&raw_pnl=${encodeURIComponent(
+  //       raw_pnl
+  //     )}&price=${encodeURIComponent(price)}&timestamp=${encodeURIComponent(
+  //       timestamp
+  //     )}&show_amount=${encodeURIComponent(pnlShown)}`
+  //   : fallbackImage;
 
   return {
     title: `${pairFromUrl.replace("_", "-")} – Twitter OG Demo`,
