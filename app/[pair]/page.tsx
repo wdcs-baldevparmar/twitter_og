@@ -38,24 +38,24 @@ Props): Promise<Metadata> {
   const pnlShown = searchParams?.show_amount ? "1" : "0";
   const description = `Just closed a ${side} on ${pairForImage} with ${leverage}x`;
 
-  // Default fallback OG image
-  const fallbackImage = "/og-default.png";
+  // fallback OG image
+  const fallbackImage = "/opengraph-image.png";
 
-  // Fallback when: no baseUrl OR all trade values are zero/empty
-  const hasMeaningfulData = pnl !== 0 || raw_pnl !== 0 || price !== 0;
-  const shouldUseFallback = !baseUrl || !hasMeaningfulData;
+  // only use dynamic OG if at least one numeric value is non-zero
+  const hasValues = pnl !== 0 || raw_pnl !== 0 || price !== 0;
 
-  const imageUrl = shouldUseFallback
-    ? fallbackImage
-    : `${baseUrl}/api/og?pair=${encodeURIComponent(
-        pairFromUrl
-      )}&side=${encodeURIComponent(side)}&leverage=${encodeURIComponent(
-        leverage
-      )}&pnl=${encodeURIComponent(String(pnl))}&raw_pnl=${encodeURIComponent(
-        raw_pnl
-      )}&price=${encodeURIComponent(price)}&timestamp=${encodeURIComponent(
-        timestamp
-      )}&show_amount=${encodeURIComponent(pnlShown)}`;
+  const imageUrl =
+    baseUrl && hasValues
+      ? `${baseUrl}/api/og?pair=${encodeURIComponent(
+          pairFromUrl
+        )}&side=${encodeURIComponent(side)}&leverage=${encodeURIComponent(
+          leverage
+        )}&pnl=${encodeURIComponent(String(pnl))}&raw_pnl=${encodeURIComponent(
+          raw_pnl
+        )}&price=${encodeURIComponent(price)}&timestamp=${encodeURIComponent(
+          timestamp
+        )}&show_amount=${encodeURIComponent(pnlShown)}`
+      : fallbackImage;
 
   return {
     title: `${pairFromUrl.replace("_", "-")} – Twitter OG Demo`,
@@ -80,9 +80,9 @@ Props): Promise<Metadata> {
 export default function PairPage({ params, searchParams }: Props) {
   const pairFromUrl = (params.pair || "ETH_USD").toUpperCase();
   const side = (searchParams.side || "BUY").toUpperCase();
-  const leverage = searchParams.leverage || "10";
-  const pnl = parseFloat(searchParams.pnl ?? "12.45");
-  const price = searchParams.price || "45123.56";
+  const leverage = searchParams.leverage || "0";
+  const pnl = parseFloat(searchParams.pnl ?? "0");
+  const price = searchParams.price || "0";
   const pairForImage = pairFromUrl.replace("_", "-");
   console.log("🚀 ~ PairPage ~ pairForImage:", pairForImage);
 
