@@ -40,7 +40,7 @@ Props): Promise<Metadata> {
   const description = `Just closed a ${side} on ${pairForImage} with ${leverage}x`;
 
   // absolute fallback
-  const fallbackImage = `${baseUrl}/public/opengraph-image.png`;
+  const fallbackImage = `${baseUrl}/opengraph-image.png`;
 
   const hasValues = pnl !== 0 || raw_pnl !== 0 || price !== 0;
 
