@@ -40,7 +40,7 @@ Props): Promise<Metadata> {
   const description = `Just closed a ${side} on ${pairForImage} with ${leverage}x`;
 
   // base fallback image
-  const fallbackImage = `${baseUrl}/og-default.png`;
+  const fallbackImage = `${baseUrl}/opengraph-image.png`;
 
   // check if query params exist
   const hasQueryParams = Object.keys(searchParams).length > 0;
