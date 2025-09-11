@@ -18,7 +18,8 @@ export async function generateMetadata({
   searchParams, // Uncomment if you want to use searchParams
 }: // searchParams,
 Props): Promise<Metadata> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL || "https://twitter-og-beta.vercel.app";
   const pairFromUrl = (params.pair || "ETH_USD").toUpperCase();
   const side = (searchParams.side || "BUY").toUpperCase();
   const leverage = searchParams.leverage || "0";
@@ -38,24 +39,22 @@ Props): Promise<Metadata> {
   const pnlShown = searchParams?.show_amount ? "1" : "0";
   const description = `Just closed a ${side} on ${pairForImage} with ${leverage}x`;
 
-  // fallback OG image
-  const fallbackImage = "/opengraph-image.png";
+  // absolute fallback
+  const fallbackImage = `${baseUrl}/og-default.png`;
 
-  // only use dynamic OG if at least one numeric value is non-zero
   const hasValues = pnl !== 0 || raw_pnl !== 0 || price !== 0;
 
-  const imageUrl =
-    baseUrl && hasValues
-      ? `${baseUrl}/api/og?pair=${encodeURIComponent(
-          pairFromUrl
-        )}&side=${encodeURIComponent(side)}&leverage=${encodeURIComponent(
-          leverage
-        )}&pnl=${encodeURIComponent(String(pnl))}&raw_pnl=${encodeURIComponent(
-          raw_pnl
-        )}&price=${encodeURIComponent(price)}&timestamp=${encodeURIComponent(
-          timestamp
-        )}&show_amount=${encodeURIComponent(pnlShown)}`
-      : fallbackImage;
+  const imageUrl = hasValues
+    ? `${baseUrl}/api/og?pair=${encodeURIComponent(
+        pairFromUrl
+      )}&side=${encodeURIComponent(side)}&leverage=${encodeURIComponent(
+        leverage
+      )}&pnl=${encodeURIComponent(String(pnl))}&raw_pnl=${encodeURIComponent(
+        raw_pnl
+      )}&price=${encodeURIComponent(price)}&timestamp=${encodeURIComponent(
+        timestamp
+      )}&show_amount=${encodeURIComponent(pnlShown)}`
+    : fallbackImage;
 
   return {
     title: `${pairFromUrl.replace("_", "-")} – Twitter OG Demo`,
@@ -65,7 +64,7 @@ Props): Promise<Metadata> {
       description,
       type: "website",
       // url: `${process.env.NEXT_PUBLIC_BASE_URL}/${pairFromUrl}`,
-      url: baseUrl ? `${baseUrl}/${pairFromUrl}` : undefined,
+      url: `${baseUrl}/${pairFromUrl}`,
       images: [{ url: imageUrl, width: 1200, height: 630, alt: "OG Card" }],
     },
     twitter: {
